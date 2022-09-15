@@ -37,7 +37,7 @@ jobs:
           push: true
           tags: redscusmyrepoacr.azurecr.io/red-scus-blazorclient-aca:${{ github.sha }}
           file: .Dockerfile/Dockerfile
-          context: .Dockerfile/
+          context: ./Dockerfile
 
 
   deploy:
