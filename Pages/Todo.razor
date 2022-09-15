@@ -2,7 +2,7 @@
 
 <PageTitle>Todo</PageTitle>
 
-<h3>Todo (@todos.Count(todo => !todo.IsDone))</h3>
+<h3>Todo (@TodoRemaining()) <p hidden="@ShowRemaining()">All Done</p></h3>
 
 <ul>
     @foreach (var todo in todos)
@@ -20,6 +20,16 @@
 @code {
     private List<TodoItem> todos = new();
     private string? newTodo;
+
+    private int TodoRemaining()
+    {
+        return todos.Count(todo => !todo.IsDone);
+    }
+
+    private bool ShowRemaining()
+    {
+        return TodoRemaining() != 0;
+    }
     
     private void AddTodo()
     {
