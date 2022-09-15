@@ -7,7 +7,7 @@ on:
     branches: 
       [ main ]
     paths:
-    - '.Dockerfile/**'
+    - '**'
     - '.github/workflows/red-scus-blazorclient-aca-AutoDeployTrigger-4a97444b-6d41-4493-a9c0-37b84d3234ab.yml'
 
   # Allow mannually trigger 
