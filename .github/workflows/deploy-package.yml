@@ -24,7 +24,7 @@ jobs:
       - name: Replace AppSettings variables
         uses: microsoft/variable-substitution@v1 
         with:
-            files: 'appsettings.json'
+            files: 'wwwroot/appsettings.json'
         env:
             message: This is from dev
             TodoApiBaseUrl: https://red-scus-demo-aca.icymoss-1ea051d6.southcentralus.azurecontainerapps.io/
