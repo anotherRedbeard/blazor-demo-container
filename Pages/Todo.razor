@@ -1,43 +1,32 @@
 ﻿@page "/todo"
+@using System.Net.Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+@inject HttpClient Http
+@inject IConfiguration Configuration
 
-<PageTitle>Todo</PageTitle>
-
-<h3>Todo (@TodoRemaining()) <p hidden="@ShowRemaining()">All Done!</p></h3>
-
-<ul>
-    @foreach (var todo in todos)
-    {
-        <li>
-            <input type="checkbox" @bind="todo.IsDone" />
-            <input @bind="todo.Title" />
-        </li>
-    }
-</ul>
-
-<input placeholder="Something todo" @bind="newTodo" />
-<button @onclick="AddTodo">Add todo</button>
+@if (todoItems == null)
+{
+    <p>No Todo Items found.</p>
+}
+else
+{
+    <p>@Configuration["message"]</p>
+    <ul>
+        @foreach (var item in todoItems)
+        {
+            <li>@item.Name</li>
+        }
+    </ul>
+}
 
 @code {
-    private List<TodoItem> todos = new();
-    private string? newTodo;
+    private TodoItem[]? todoItems;
+    private string serviceEndpoint;
 
-    private int TodoRemaining()
+    protected override async Task OnInitializedAsync()
     {
-        return todos.Count(todo => !todo.IsDone);
-    }
-
-    private bool ShowRemaining()
-    {
-        return TodoRemaining() != 0;
-    }
-    
-    private void AddTodo()
-    {
-        // Todo:  Add the todo
-        if (!string.IsNullOrWhiteSpace(newTodo))
-        {
-            todos.Add(new TodoItem { Title = newTodo });
-            newTodo = string.Empty;
-        }
+        serviceEndpoint = Configuration["TodoApiBaseUrl"] + "api/TodoItems";
+        todoItems = await Http.GetFromJsonAsync<TodoItem[]>(serviceEndpoint);
     }
 }
