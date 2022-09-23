@@ -38,6 +38,9 @@ jobs:
           tags: redscusmyrepoacr.azurecr.io/red-scus-blazorclient-aca:${{ github.sha }}
           file: ./Dockerfile
           context: ./
+          secrets: |
+            "API_ENDPOINT=endpoint"
+            "API_PASSWORD=password"
 
 
   deploy:
