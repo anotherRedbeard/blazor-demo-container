@@ -5,13 +5,15 @@
 @inject HttpClient Http
 @inject IConfiguration Configuration
 
+<p>@Configuration["message"]</p>
+
+
 @if (todoItems == null)
 {
     <p>No Todo Items found.</p>
 }
 else
 {
-    <p>@Configuration["message"]</p>
     <ul>
         @foreach (var item in todoItems)
         {
