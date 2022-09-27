@@ -27,8 +27,8 @@ jobs:
             files: 'wwwroot/appsettings.json'
         env:
             message: This is from dev
-            TodoApiBaseUrl: https://red-scus-demo-aca.icymoss-1ea051d6.southcentralus.azurecontainerapps.io/
-            #TodoApiBaseUrl: https://localhost:7133/
+            #TodoApiBaseUrl: https://red-scus-demo-aca.icymoss-1ea051d6.southcentralus.azurecontainerapps.io/
+            TodoApiBaseUrl: https://localhost:7133/
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
