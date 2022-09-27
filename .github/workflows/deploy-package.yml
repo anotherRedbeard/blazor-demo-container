@@ -47,7 +47,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: redscusmyrepoacr.azurecr.io/red-scus-blazorclient-aca:${{ VERSION }}.${{ github.run_number }}
+          tags: redscusmyrepoacr.azurecr.io/red-scus-blazorclient-aca:${{ env.VERSION }}.${{ github.run_number }}
           file: ./Dockerfile
           context: ./
 
@@ -69,4 +69,4 @@ jobs:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
             az containerapp registry set -n red-scus-blazorclient-aca -g red-scus-fun-with-containers-rg --server redscusmyrepoacr.azurecr.io --username  ${{ secrets.REDSCUSBLAZORCLIENTACA_REGISTRY_USERNAME }} --password ${{ secrets.REDSCUSBLAZORCLIENTACA_REGISTRY_PASSWORD }}
-            az containerapp update -n red-scus-blazorclient-aca -g red-scus-fun-with-containers-rg --image redscusmyrepoacr.azurecr.io/red-scus-blazorclient-aca:${{ VERSION }}.${{ github.run_number }} --replace-env-vars message='This is just a test' bar=foobar
+            az containerapp update -n red-scus-blazorclient-aca -g red-scus-fun-with-containers-rg --image redscusmyrepoacr.azurecr.io/red-scus-blazorclient-aca:${{ env.VERSION }}.${{ github.run_number }} --replace-env-vars message='This is just a test' bar=foobar
