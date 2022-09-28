@@ -29,8 +29,8 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      aca-username: ${{ steps.create-resources.outputs.aca-username }}
-      aca-password: ${{ steps.create-resources.outputs.aca-password }}
+      acr-username: ${{ steps.create-resources.outputs.acr-username }}
+      acr-password: ${{ steps.create-resources.outputs.acr-password }}
 
     steps:
       - name: Azure Login
@@ -48,8 +48,10 @@ jobs:
             az acr create -n ${{ env.registry-name }} -g ${{ env.resource-group-name }} --sku ${{ env.registry-sku }} --admin-enabled true
             ACR_USERNAME=$(az acr credential show -n ${{ env.registry-name }} --query username --out tsv)
             ACR_PASSWORD=$(az acr credential show -n ${{ env.registry-name }} --query passwords[0].value --out tsv)
-            echo "::set-output name=aca-username::$ACR_USERNAME"
-            echo "::set-output name=aca-password::$ACR_PASSWORD"
+            echo "::add-mask::$ACR_USERNAME"
+            echo "::add-mask::$ACR_PASSWORD"
+            echo "::set-output name=acr-username::$ACR_USERNAME"
+            echo "::set-output name=acr-password::$ACR_PASSWORD"
             
             # Get the Client_ID and CLIENT_SECRET, run each separately and wait for it to complete
             LOG_ANALYTICS_WORKSPACE_CLIENT_ID=$(az monitor log-analytics workspace show --query customerId -g ${{ env.resource-group-name }} -n ${{ env.log-analytics-workspace-name }} --out tsv)
@@ -67,8 +69,8 @@ jobs:
 
     steps:
       - name: test
-        run: echo "${{ needs.build-infra.outputs.aca-username }} - pwd ${{ needs.build-infra.outputs.aca-password }}"
-        
+        run: echo "${{ needs.build-infra.outputs.acr-username }} - pwd ${{ needs.build-infra.outputs.acr-password }}"
+
       - name: Checkout to the branch
         uses: actions/checkout@v2
 
@@ -88,8 +90,8 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: redscusmyrepoacr.azurecr.io
-          username: ${{ env.ACR_USERNAME }}
-          password: ${{ env.ACR_PASSWORD }}
+          username: ${{ needs.build-infra.outputs.acr-username }}
+          password: ${{ needs.build-infra.outputs.acr-password }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
