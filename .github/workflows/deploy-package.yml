@@ -18,6 +18,7 @@ env:
   LOCATION: 'southcentralus'
   RESOURCE_GROUP_NAME: 'red-scus-test-rg'
   LOG_ANALYTICS_WORKSPACE: 'redscusworkspace00111'
+  LOG_ANALYTICS_WORKSPACE_CLIENT_ID: ''
 
 jobs:
   build-infra:
