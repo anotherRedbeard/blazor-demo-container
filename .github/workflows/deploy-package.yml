@@ -18,6 +18,9 @@ env:
   LOCATION: 'southcentralus'
   RESOURCE_GROUP_NAME: 'red-scus-test-rg'
   LOG_ANALYTICS_WORKSPACE: 'redscusworkspace00111'
+  ACA_ENV_NAME: 'dev-env'
+  REGISTRY_NAME: 'redscuscontainerreg000111'
+  REGISTRY_SKU: 'Standard'
 
 jobs:
   build-infra:
@@ -35,8 +38,10 @@ jobs:
           inlineScript: |
             az group create -l ${{ env.LOCATION }} -n ${{ env.RESOURCE_GROUP_NAME}}
             az monitor log-analytics workspace create --resource-group ${{ env.RESOURCE_GROUP_NAME }} --workspace-name ${{ env.LOG_ANALYTICS_WORKSPACE }}
+            az acr create -n ${{ env.REGISTRY_NAME }} -g ${{ env.RESOURCE_GROUP_NAME }} --sku ${{ env.REGISTRY_SKU }}
             # Get the Client_ID and CLIENT_SECRET, run each separately and wait for it to complete
             LOG_ANALYTICS_WORKSPACE_CLIENT_ID=$(az monitor log-analytics workspace show --query customerId -g ${{ env.RESOURCE_GROUP_NAME }} -n ${{ env.LOG_ANALYTICS_WORKSPACE }} --out tsv)
             LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=$(az monitor log-analytics workspace get-shared-keys --query primarySharedKey -g ${{ env.RESOURCE_GROUP_NAME }} -n ${{ env.LOG_ANALYTICS_WORKSPACE }} --out tsv)
-            echo "$LOG_ANALYTICS_WORKSPACE_CLIENT_ID"
+            echo "::add-mask::$LOG_ANALYTICS_WORKSPACE_CLIENT_ID"
             echo "::add-mask::$LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET"
+            az containerapp env create --name ${{ env.ACA_ENV_NAME }} --resource-group ${{ env.RESOURCE_GROUP_NAME }} --location ${{ env.LOCATION }}
