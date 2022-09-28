@@ -18,7 +18,6 @@ env:
   LOCATION: 'southcentralus'
   RESOURCE_GROUP_NAME: 'red-scus-test-rg'
   LOG_ANALYTICS_WORKSPACE: 'redscusworkspace00111'
-  LOG_ANALYTICS_WORKSPACE_CLIENT_ID: ''
 
 jobs:
   build-infra:
@@ -35,8 +34,9 @@ jobs:
         with:
           inlineScript: |
             az group create -l ${{ env.LOCATION }} -n ${{ env.RESOURCE_GROUP_NAME}}
-            az monitor log-analytics workspace create --resource-group ${{ env.RESOURCE_GROUP_NAME }} --workspace-name ${{ LOG_ANALYTICS_WORKSPACE }}
-            LOG_ANALYTICS_WORKSPACE_CLIENT_ID=$(az monitor log-analytics workspace show --query customerId -g $RESOURCE_GROUP -n $LOG_ANALYTICS_WORKSPACE --out tsv)
-            LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=$(az monitor log-analytics workspace get-shared-keys --query primarySharedKey -g $RESOURCE_GROUP -n $LOG_ANALYTICS_WORKSPACE --out tsv)
+            az monitor log-analytics workspace create --resource-group ${{ env.RESOURCE_GROUP_NAME }} --workspace-name ${{ env.LOG_ANALYTICS_WORKSPACE }}
+            # Get the Client_ID and CLIENT_SECRET, run each separately and wait for it to complete
+            LOG_ANALYTICS_WORKSPACE_CLIENT_ID=$(az monitor log-analytics workspace show --query customerId -g ${{ env.RESOURCE_GROUP_NAME }} -n ${{ env.LOG_ANALYTICS_WORKSPACE }} --out tsv)
+            LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=$(az monitor log-analytics workspace get-shared-keys --query primarySharedKey -g ${{ env.RESOURCE_GROUP_NAME }} -n ${{ env.LOG_ANALYTICS_WORKSPACE }} --out tsv)
             echo "$LOG_ANALYTICS_WORKSPACE_CLIENT_ID"
             echo "::add-mask::$LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET"
