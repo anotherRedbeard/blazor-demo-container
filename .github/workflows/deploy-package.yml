@@ -46,4 +46,4 @@ jobs:
             echo "::add-mask::$LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET"
             #Allow az cli to get extensions without prompts and containerapp needs an extension
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp env create --name ${{ env.ACA_ENV_NAME }} --resource-group ${{ env.RESOURCE_GROUP_NAME }} --location ${{ env.LOCATION }}
+            az containerapp env create --name ${{ env.ACA_ENV_NAME }} --resource-group ${{ env.RESOURCE_GROUP_NAME }} --location ${{ env.LOCATION }} --logs-workspace-id $LOG_ANALYTICS_WORKSPACE_CLIENT_ID --logs-workspace-key $LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET
