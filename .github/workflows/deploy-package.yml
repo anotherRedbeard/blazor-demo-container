@@ -21,8 +21,8 @@ env:
   ACA_ENV_NAME: 'dev-env'
   REGISTRY_NAME: 'redscuscontainerreg000111'
   REGISTRY_SKU: 'Standard'
-  ACR_USERNAME: ''
-  ACR_PASSWORD: ''
+  ACR_USERNAME: 'test'
+  ACR_PASSWORD: 'test'
 
 jobs:
   build-infra:
