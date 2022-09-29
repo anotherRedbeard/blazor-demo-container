@@ -120,7 +120,7 @@ jobs:
         with:
           registry: ${{ env.registry-name }}.azurecr.io
           username: ${{ needs.build-infra.outputs.acr-username }}
-          password: $ACR_PASSWORD_DECRYPTED
+          password: ${{ ACR_PASSWORD_DECRYPTED }}
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
