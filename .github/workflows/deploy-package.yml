@@ -79,7 +79,7 @@ jobs:
       - name: Encrypt secrets
         id: encrypt-secrets
         run: |
-            ACR_PASSWORD_ENCRYPTED=$(gpg --symmetric --batch --passphrase ${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }} --output - <(echo "$ACR_PASSWORD") | base64 -w0)
+            ACR_PASSWORD_ENCRYPTED=$(gpg --symmetric --batch --passphrase ${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }} --output - <(echo $ACR_PASSWORD) | base64 -w0)
             echo "::set-output name=acr-username::$ACR_USERNAME"
             echo "::set-output name=acr-password::$ACR_PASSWORD_ENCRYPTED"
             echo "this is a thing:  $ACR_PASSWORD_ENCRYPTED"
