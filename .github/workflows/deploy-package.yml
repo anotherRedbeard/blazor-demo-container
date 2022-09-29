@@ -23,8 +23,6 @@ env:
   registry-sku: 'Standard'
   image-name: 'todo-blazorclient'
   container-name: 'todo-blazorclient-aca'
-  #aca-username: 'username'
-  #aca-password: 'password'
 
 jobs:
   build-infra:
@@ -40,26 +38,38 @@ jobs:
         with:
           creds: ${{ secrets.REDSCUSBLAZORCLIENTACA_AZURE_CREDENTIALS }}
 
-      - name: Create Resources
-        id: create-resources
+      - name: Create Resource Group
         uses: azure/CLI@v1
         with:
           inlineScript: |
             az group create -l ${{ env.location }} -n ${{ env.resource-group-name}}
-            az monitor log-analytics workspace create --resource-group ${{ env.resource-group-name }} --workspace-name ${{ env.log-analytics-workspace-name }}
-            az acr create -n ${{ env.registry-name }} -g ${{ env.resource-group-name }} --sku ${{ env.registry-sku }} --admin-enabled true
-            ACR_USERNAME=$(az acr credential show -n ${{ env.registry-name }} --query username --out tsv)
-            ACR_PASSWORD=$(az acr credential show -n ${{ env.registry-name }} --query passwords[0].value --out tsv)
-            echo "::add-mask::$ACR_PASSWORD"
-            echo ACR_USERNAME=$ACR_USERNAME >> $GITHUB_ENV
-            echo ACR_PASSWORD=$ACR_PASSWORD >> $GITHUB_ENV
             
+      - name: Create Log Analytics Workspace
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az monitor log-analytics workspace create --resource-group ${{ env.resource-group-name }} --workspace-name ${{ env.log-analytics-workspace-name }}
             # Get the Client_ID and CLIENT_SECRET, run each separately and wait for it to complete
             LOG_ANALYTICS_WORKSPACE_CLIENT_ID=$(az monitor log-analytics workspace show --query customerId -g ${{ env.resource-group-name }} -n ${{ env.log-analytics-workspace-name }} --out tsv)
             LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=$(az monitor log-analytics workspace get-shared-keys --query primarySharedKey -g ${{ env.resource-group-name }} -n ${{ env.log-analytics-workspace-name }} --out tsv)
             echo "::add-mask::$LOG_ANALYTICS_WORKSPACE_CLIENT_ID"
             echo "::add-mask::$LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET"
             
+      - name: Create Container Registry
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az acr create -n ${{ env.registry-name }} -g ${{ env.resource-group-name }} --sku ${{ env.registry-sku }} --admin-enabled true
+            ACR_USERNAME=$(az acr credential show -n ${{ env.registry-name }} --query username --out tsv)
+            ACR_PASSWORD=$(az acr credential show -n ${{ env.registry-name }} --query passwords[0].value --out tsv)
+            echo "::add-mask::$ACR_PASSWORD"
+            echo ACR_USERNAME=$ACR_USERNAME >> $GITHUB_ENV
+            echo ACR_PASSWORD=$ACR_PASSWORD >> $GITHUB_ENV
+
+      - name: Create Container App Environment
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
             #Allow az cli to get extensions without prompts and containerapp needs an extension
             az config set extension.use_dynamic_install=yes_without_prompt
             az containerapp env create --name ${{ env.aca-env-name }} --resource-group ${{ env.resource-group-name }} --location ${{ env.location }} --logs-workspace-id $LOG_ANALYTICS_WORKSPACE_CLIENT_ID --logs-workspace-key $LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET
@@ -79,13 +89,13 @@ jobs:
       - name: Decrypt Secrets
         id: decrypt-secrets
         run: |
-            ACR_PASSWORD_DECRYPTED=$(gpg ---decrypt --quiet --batch --passphrase ${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }} --output - <(echo ${{ needs.build-infra.outputs.acr-password }}") | base64 --decode)
+            ACR_PASSWORD_DECRYPTED=$(gpg --decrypt --quiet --batch --passphrase ${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }} --output - <(echo ${{ needs.build-infra.outputs.acr-password }}") | base64 --decode)
             echo "::add-mask::$ACR_PASSWORD_DECRYPTED"
             echo "value $ACR_PASSWORD_DECRYPTED"
-            echo ACR_PASSWORD=$ACR_PASSWORD_DECRYPTED >> $GITHUB_ENV
+            echo "::add-mask::ACR_PASSWORD=$ACR_PASSWORD_DECRYPTED >> $GITHUB_ENV"
 
       - name: test
-        run: echo "${{ needs.build-infra.outputs.acr-username }} - pwd ${{ needs.build-infra.outputs.acr-password }}"
+        run: echo "${{ needs.build-infra.outputs.acr-username }} - pwd ${{ $ACR_PASSWORD }}"
 
       - name: Checkout to the branch
         uses: actions/checkout@v2
@@ -107,7 +117,7 @@ jobs:
         with:
           registry: ${{ env.registry-name }}.azurecr.io
           username: ${{ needs.build-infra.outputs.acr-username }}
-          password: ${{ needs.build-infra.outputs.acr-password }}
+          password: $ACR_PASSWORD
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
