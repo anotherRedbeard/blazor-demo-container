@@ -49,7 +49,7 @@ jobs:
             ACR_USERNAME=$(az acr credential show -n ${{ env.registry-name }} --query username --out tsv)
             ACR_PASSWORD=$(az acr credential show -n ${{ env.registry-name }} --query passwords[0].value --out tsv)
             #echo "::add-mask::$ACR_USERNAME"
-            echo "::add-mask::$ACR_PASSWORD"
+            #echo "::add-mask::$ACR_PASSWORD"
             echo "::set-output name=acr-username::$ACR_USERNAME"
             echo "::set-output name=acr-password::$ACR_PASSWORD"
             
