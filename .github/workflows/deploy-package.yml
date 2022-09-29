@@ -54,6 +54,8 @@ jobs:
             LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=$(az monitor log-analytics workspace get-shared-keys --query primarySharedKey -g ${{ env.resource-group-name }} -n ${{ env.log-analytics-workspace-name }} --out tsv)
             echo "::add-mask::$LOG_ANALYTICS_WORKSPACE_CLIENT_ID"
             echo "::add-mask::$LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET"
+            echo LOG_ANALYTICS_WORKSPACE_CLIENT_ID=$LOG_ANALYTICS_WORKSPACE_CLIENT_ID >> $GITHUB_ENV
+            echo LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=$LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET >> $GITHUB_ENV
             
       - name: Create Container Registry
         uses: azure/CLI@v1
