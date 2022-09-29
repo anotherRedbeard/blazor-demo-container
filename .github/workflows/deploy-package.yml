@@ -95,7 +95,7 @@ jobs:
             echo "$ACR_PASSWORD_DECRYPTED=$ACR_PASSWORD_DECRYPTED >> $GITHUB_ENV"
 
       - name: test
-        run: echo "${{ needs.build-infra.outputs.acr-username }} - pwd ${{ $ACR_PASSWORD }}"
+        run: echo "${{ needs.build-infra.outputs.acr-username }} - pwd $ACR_PASSWORD_DECRYPTED"
 
       - name: Checkout to the branch
         uses: actions/checkout@v2
@@ -117,7 +117,7 @@ jobs:
         with:
           registry: ${{ env.registry-name }}.azurecr.io
           username: ${{ needs.build-infra.outputs.acr-username }}
-          password: $ACR_PASSWORD
+          password: $ACR_PASSWORD_DECRYPTED
 
       - name: Build and push container image to registry
         uses: docker/build-push-action@v2
