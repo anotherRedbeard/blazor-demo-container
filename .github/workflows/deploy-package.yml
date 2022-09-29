@@ -50,10 +50,11 @@ jobs:
             az acr create -n ${{ env.registry-name }} -g ${{ env.resource-group-name }} --sku ${{ env.registry-sku }} --admin-enabled true
             ACR_USERNAME=$(az acr credential show -n ${{ env.registry-name }} --query username --out tsv)
             ACR_PASSWORD=$(az acr credential show -n ${{ env.registry-name }} --query passwords[0].value --out tsv)
-            echo "::add-mask::$ACR_PASSWORD"
-            echo "acr thing = $ACR_PASSWORD"
+            ACR_PASSWORD_ENCRYPTED=$(gpg --symmetric --batch --passphrase ${{ secrets.PGP_SECRET_SIGNING_PASSPHRASE }} --output - <(echo $ACR_PASSWORD) | base64 -w0)
+            #echo "::add-mask::$ACR_PASSWORD"
+            echo "acr thing = $ACR_PASSWORD_ENCRYPTED"
             echo "::set-output name=acr-username::$ACR_USERNAME"
-            echo "::set-output name=acr-password::$ACR_PASSWORD"
+            echo "::set-output name=acr-password::$ACR_PASSWORD_ENCRYPTED"
             
             # Get the Client_ID and CLIENT_SECRET, run each separately and wait for it to complete
             LOG_ANALYTICS_WORKSPACE_CLIENT_ID=$(az monitor log-analytics workspace show --query customerId -g ${{ env.resource-group-name }} -n ${{ env.log-analytics-workspace-name }} --out tsv)
