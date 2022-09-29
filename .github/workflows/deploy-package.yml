@@ -21,6 +21,7 @@ env:
   aca-env-name: 'dev-env'
   registry-name: 'redscuscontainerreg000111'
   registry-sku: 'Standard'
+  image-name: 'todo-blazorclient'
   #aca-username: 'username'
   #aca-password: 'password'
 
@@ -89,7 +90,7 @@ jobs:
       - name: Log in to container registry
         uses: docker/login-action@v1
         with:
-          registry: redscusmyrepoacr.azurecr.io
+          registry: ${{ env.registry-name }}.azurecr.io
           username: ${{ needs.build-infra.outputs.acr-username }}
           password: ${{ needs.build-infra.outputs.acr-password }}
 
@@ -97,6 +98,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: redscusmyrepoacr.azurecr.io/red-scus-blazorclient-aca:${{ env.version }}.${{ github.run_number }}
+          tags: ${{ env.registry-name }}.azurecr.io/${{ env.image-name }}:${{ env.version }}.${{ github.run_number }}
           file: ./Dockerfile
           context: ./
