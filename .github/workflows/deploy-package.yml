@@ -93,7 +93,7 @@ jobs:
         id: decrypt-secrets
         run: |
             ACR_PASSWORD_DECRYPTED=$(gpg --decrypt --quiet --batch --passphrase ${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }} --output - <(echo ${{ needs.build-infra.outputs.acr-password }} | base64 --decode))
-            echo "::add-mask::$ACR_PASSWORD_DECRYPTED"
+            #echo "::add-mask::$ACR_PASSWORD_DECRYPTED"
             echo "value $ACR_PASSWORD_DECRYPTED"
             echo $ACR_PASSWORD_DECRYPTED=$ACR_PASSWORD_DECRYPTED >> $GITHUB_ENV
 
