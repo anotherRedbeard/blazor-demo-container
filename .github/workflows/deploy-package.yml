@@ -149,8 +149,9 @@ jobs:
           inlineScript: |
             ACR_USERNAME=$(az acr credential show -n ${{ env.registry-name }} --query username --out tsv)
             ACR_PASSWORD=$(az acr credential show -n ${{ env.registry-name }} --query passwords[0].value --out tsv)
+            echo "::add-mask::$ACR_PASSWORD"
             echo ACR_USERNAME=$ACR_USERNAME >> $GITHUB_ENV
-            echo "ACR_PASSWORD=::add-mask::$ACR_PASSWORD >> $GITHUB_ENV"
+            echo ACR_PASSWORD=$ACR_PASSWORD >> $GITHUB_ENV
 
       - name: Deploy to containerapp
         uses: azure/CLI@v1
