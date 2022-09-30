@@ -93,7 +93,7 @@ jobs:
         id: decrypt-secrets
         run: |
             ACR_PASSWORD_DECRYPTED=$(gpg --decrypt --quiet --batch --passphrase ${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }} --output - <(echo ${{ needs.build-infra.outputs.acr-password }} | base64 --decode))
-            #echo "::add-mask::$ACR_PASSWORD_DECRYPTED"
+            echo "::add-mask::$ACR_PASSWORD_DECRYPTED"
             echo "value $ACR_PASSWORD_DECRYPTED"
             echo ACR_PASSWORD_DECRYPTED=$ACR_PASSWORD_DECRYPTED >> $GITHUB_ENV
 
@@ -143,6 +143,14 @@ jobs:
         with:
           creds: ${{ secrets.REDSCUSBLAZORCLIENTACA_AZURE_CREDENTIALS }}
 
+      - name: Get Container Registry Credentials
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            ACR_USERNAME=$(az acr credential show -n ${{ env.registry-name }} --query username --out tsv)
+            ACR_PASSWORD=$(az acr credential show -n ${{ env.registry-name }} --query passwords[0].value --out tsv)
+            echo ACR_USERNAME=$ACR_USERNAME >> $GITHUB_ENV
+            echo "ACR_PASSWORD=::add-mask::$ACR_PASSWORD >> $GITHUB_ENV"
 
       - name: Deploy to containerapp
         uses: azure/CLI@v1
@@ -152,6 +160,6 @@ jobs:
             az containerapp create -n ${{ env.container-name }} -g ${{ env.resource-group-name }} \
               --image ${{ env.registry-name }}.azurecr.io/${{ env.image-name }}:${{ env.version }}.${{ github.run_number }} \
               --environment ${{ env.aca-env-name }} --registry-server ${{ env.registry-name }}.azurecr.io \
-              --registry-username ${{ needs.build-infra.outputs.acr-username }} \
-              --registry-password ${{ needs.build-infra.outputs.acr-password }} \
+              --registry-username ${{ env.ACR_USERNAME }} \
+              --registry-password ${{ env.ACR_PASSWORD }} \
               --env-vars message='test is a test' value=foobar
