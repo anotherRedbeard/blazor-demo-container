@@ -74,7 +74,11 @@ jobs:
           inlineScript: |
             #Allow az cli to get extensions without prompts and containerapp needs an extension
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp env create --name ${{ env.aca-env-name }} --resource-group ${{ env.resource-group-name }} --location ${{ env.location }} --logs-workspace-id $LOG_ANALYTICS_WORKSPACE_CLIENT_ID --logs-workspace-key $LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET
+            az containerapp env create --name ${{ env.aca-env-name }} \
+              --resource-group ${{ env.resource-group-name }} \
+              --location ${{ env.location }} \
+              --logs-workspace-id $LOG_ANALYTICS_WORKSPACE_CLIENT_ID \
+              --logs-workspace-key $LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET
 
       - name: Encrypt secrets
         id: encrypt-secrets
@@ -82,7 +86,6 @@ jobs:
             ACR_PASSWORD_ENCRYPTED=$(gpg --symmetric --batch --passphrase ${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }} --output - <(echo $ACR_PASSWORD) | base64 -w0)
             echo "::set-output name=acr-username::$ACR_USERNAME"
             echo "::set-output name=acr-password::$ACR_PASSWORD_ENCRYPTED"
-            echo "this is a thing:  $ACR_PASSWORD_ENCRYPTED"
   
   build:
     runs-on: ubuntu-latest
@@ -96,9 +99,6 @@ jobs:
             echo "::add-mask::$ACR_PASSWORD_DECRYPTED"
             echo "value $ACR_PASSWORD_DECRYPTED"
             echo ACR_PASSWORD_DECRYPTED=$ACR_PASSWORD_DECRYPTED >> $GITHUB_ENV
-
-      - name: test
-        run: echo "${{ needs.build-infra.outputs.acr-username }} - from-previous ${{ needs.build-infra.outputs.acr-password }} - pwd $ACR_PASSWORD_DECRYPTED"
 
       - name: Checkout to the branch
         uses: actions/checkout@v2
@@ -135,9 +135,6 @@ jobs:
     needs: [build, build-infra]
     
     steps:
-      - name: test
-        run: echo "${{ needs.build-infra.outputs.acr-username }} - pwd ${{ needs.build-infra.outputs.acr-password }}"
-
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -163,4 +160,5 @@ jobs:
               --environment ${{ env.aca-env-name }} --registry-server ${{ env.registry-name }}.azurecr.io \
               --registry-username ${{ env.ACR_USERNAME }} \
               --registry-password ${{ env.ACR_PASSWORD }} \
+              --ingress external --target-port 80 \
               --env-vars message='test is a test' value=foobar
