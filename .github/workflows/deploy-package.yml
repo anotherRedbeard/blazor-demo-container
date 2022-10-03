@@ -23,6 +23,7 @@ env:
   registry-sku: 'Standard'
   image-name: 'todo-blazorclient'
   container-name: 'todo-blazorclient-aca'
+  todo-api-url: 'https://red-scus-demo-aca.icymoss-1ea051d6.southcentralus.azurecontainerapps.io/'
 
 jobs:
   build-infra:
@@ -109,8 +110,7 @@ jobs:
             files: 'wwwroot/appsettings.json'
         env:
             message: This is from dev
-            TodoApiBaseUrl: https://red-scus-demo-aca.icymoss-1ea051d6.southcentralus.azurecontainerapps.io/
-            #TodoApiBaseUrl: https://localhost:7133/
+            TodoApiBaseUrl: ${{ env.todo-api-url }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
