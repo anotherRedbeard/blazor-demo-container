@@ -161,4 +161,4 @@ jobs:
               --registry-username ${{ env.ACR_USERNAME }} \
               --registry-password ${{ env.ACR_PASSWORD }} \
               --ingress external --target-port 80 \
-              --env-vars message='test is a test' value=foobar
+              --env-vars message='test is a test again' value=foobar
