@@ -103,6 +103,11 @@ jobs:
             echo "value $ACR_PASSWORD_DECRYPTED"
             echo ACR_PASSWORD_DECRYPTED=$ACR_PASSWORD_DECRYPTED >> $GITHUB_ENV
 
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
       - name: Get Client Container url
         uses: azure/CLI@v1
         with:
