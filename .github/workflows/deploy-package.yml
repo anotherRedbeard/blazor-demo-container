@@ -39,7 +39,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.REDSCUSBLAZORCLIENTACA_AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Create Resource Group
         uses: azure/CLI@v1
@@ -148,7 +148,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.REDSCUSBLAZORCLIENTACA_AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Get Container Registry Credentials
         uses: azure/CLI@v1
