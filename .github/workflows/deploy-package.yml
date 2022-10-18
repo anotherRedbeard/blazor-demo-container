@@ -107,7 +107,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-          
+
       - name: Get Client Container url
         uses: azure/CLI@v1
         with:
@@ -125,7 +125,7 @@ jobs:
             files: 'wwwroot/appsettings.json'
         env:
             message: This is from dev
-            TodoApiBaseUrl: ${{ env.API_CONTAINER_URL }}
+            TodoApiBaseUrl: https://${{ env.API_CONTAINER_URL }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
