@@ -1,11 +1,3 @@
-[![Trigger auto deployment for red-scus-blazorclient-aca](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-package.yml/badge.svg)](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-package.yml)
-
-# blazor-demo-container
-blazor app that will run in a container
-
-
-
-
 # Blazor container demo
 
 This application is an example Blazor client app that has been containerized so it can be deployed into a Azure Container App.
@@ -16,7 +8,7 @@ This project was created initially by using the sample Blazor todo list app from
 
 ## Badges
 
-[![Trigger auto deployment for red-scus-demo-aca](https://github.com/anotherRedbeard/web-api-demo-container/actions/workflows/deploy-package.yml/badge.svg?branch=main)](https://github.com/anotherRedbeard/web-api-demo-container/actions/workflows/deploy-package.yml)
+[![Trigger auto deployment for Blazor Container App](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-package.yml/badge.svg)](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-package.yml)
 
 ## How to use
 
