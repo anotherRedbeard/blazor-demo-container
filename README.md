@@ -34,9 +34,10 @@ This is meant to be a repo that you can clone and use as you like.  The only thi
 ## Workflow
 
 The workflow has 3 separate stages: build-infra, build, deploy
-    - build-infra
-      - Creates all the required infrastructure you need for Azure Container Apps.  These actions are idempotent so they can be run multiple times.
-    - build
-      - Builds the container and tags the image
-    - deploy
-      - Uses the container image that was built and pushed to ACR and creates/updates that container app with that newly built image
+
+1. build-infra
+    - Creates all the required infrastructure you need for Azure Container Apps.  These actions are idempotent so they can be run multiple times.
+2. build
+    - Builds the container and tags the image
+3. deploy
+    - Uses the container image that was built and pushed to ACR and creates/updates that container app with that newly built image
