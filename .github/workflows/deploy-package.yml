@@ -125,7 +125,7 @@ jobs:
             files: 'wwwroot/appsettings.json'
         env:
             message: This is from dev
-            TodoApiBaseUrl: https://${{ env.API_CONTAINER_URL }}
+            TodoApiBaseUrl: https://${{ env.API_CONTAINER_URL }}/
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
