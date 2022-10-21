@@ -88,8 +88,7 @@ jobs:
         run: |
             ACR_PASSWORD_ENCRYPTED=$(gpg --symmetric --batch --passphrase ${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }} --output - <(echo $ACR_PASSWORD) | base64 -w0)
             echo "acr-username=$ACR_USERNAME" >> $GITHUB_OUTPUT
-            echo "acr-password=$ACR_USERNAME" >> $GITHUB_OUTPUT
-            echo "username is: ${{ env.ACR_USERNAME }}"
+            echo "acr-password=$ACR_PASSWORD" >> $GITHUB_OUTPUT
   
   build:
     runs-on: ubuntu-latest
@@ -99,7 +98,6 @@ jobs:
       - name: Decrypt Secrets
         id: decrypt-secrets
         run: |
-            echo "another username:  ${{ needs.build-infra.outputs.acr-username }}"
             ACR_PASSWORD_DECRYPTED=$(gpg --decrypt --quiet --batch --passphrase ${{ secrets.GPG_SECRET_SIGNING_PASSPHRASE }} --output - <(echo ${{ needs.build-infra.outputs.acr-password }} | base64 --decode))
             echo "::add-mask::$ACR_PASSWORD_DECRYPTED"
             echo "value $ACR_PASSWORD_DECRYPTED"
