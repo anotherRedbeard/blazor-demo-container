@@ -177,4 +177,5 @@ jobs:
               --registry-username ${{ env.ACR_USERNAME }} \
               --registry-password ${{ env.ACR_PASSWORD }} \
               --ingress external --target-port 80 \
+              --revisions-mode multiple  --revision-suffix ${{ env.major-version }}${{ env.minor-version }}${{ github.run_number }} \
               --env-vars message='test is a test again' value=foobar
