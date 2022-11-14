@@ -8,7 +8,9 @@ This project was created initially by using the sample Blazor todo list app from
 
 ## Badges
 
-[![Trigger auto deployment for Blazor Container App](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-package.yml/badge.svg)](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-package.yml)
+[![Trigger container apps deployment](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aca-package.yml/badge.svg)](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aca-package.yml)
+
+[![Trigger aks app deployment](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aks-package.yml/badge.svg)](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aks-package.yml)
 
 ## How to use
 
