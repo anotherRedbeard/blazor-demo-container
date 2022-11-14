@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: blazor
-        image: redscuscontainerreg000111.azurecr.io/todo-blazorclient:v1.0.93
+        image: __ACRFullImageName__
         ports:
         - containerPort: 80
 ---
