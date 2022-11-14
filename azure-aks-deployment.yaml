@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: blazor
-        image: #{ACRFullImageName}#
+        image: __ACRFullImageName__
         ports:
         - containerPort: 80
 ---

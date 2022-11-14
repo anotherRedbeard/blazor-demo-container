@@ -45,7 +45,7 @@ jobs:
             - uses: actions/checkout@v3
 
             - name: Find and Replace - Using Secrets
-              run: find *.yaml -type f -exec sed -i ''s/#{ACRFullImageName}#/${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io\/${{ env.CONTAINER_NAME }}:${{ env.VERSION }}.${{ github.run_number }}/g'' {} \;
+              run: find *.yaml -type f -exec sed -i ''s/__ACRFullImageName__/${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io\/${{ env.CONTAINER_NAME }}:${{ env.VERSION }}.${{ github.run_number }}/g'' {} \;
             - name: Bash - Show XML Contents
               run: cat ${{ env.DEPLOYMENT_MANIFEST_PATH }}
 
