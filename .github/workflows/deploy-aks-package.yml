@@ -11,7 +11,7 @@ on:
 env:
     VERSION: v1
     ACR_RESOURCE_GROUP: red-aks-demo-rg
-    AZURE_CONTAINER_REGISTRY: myAksRepo
+    AZURE_CONTAINER_REGISTRY: myaksrepo
     CLUSTER_NAME: myAKSCluster
     CLUSTER_RESOURCE_GROUP: red-aks-demo-rg
     CONTAINER_NAME: blazor-client
