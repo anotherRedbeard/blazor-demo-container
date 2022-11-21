@@ -26,13 +26,19 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
+            - name: get todo backend api endpoint
+              uses: azure/CLI@v1
+              with:
+                inlineScript: |
+                  TODO_BACKEND_ENDPOINT=$(az aks command invoke -n myAKSCluster -g red-aks-demo-rg -c 'kubectl describe services todo-api-backend --namespace aks-dev-ns' | awk -F: '/^Endpoints/{print$2":"$3}' | xargs echo)
+                  echo TODO_BACKEND_ENDPOINT=$TODO_BACKEND_ENDPOINT >> $GITHUB_ENV
             - name: Replace AppSettings variables
               uses: microsoft/variable-substitution@v1 
               with:
                   files: 'wwwroot/appsettings.json'
               env:
                 message: This is from dev
-                TodoApiBaseUrl: https://${{ env.CLUSTER_NAME }}/
+                TodoApiBaseUrl: https://$TODO_BACKEND_ENDPOINT/
             - uses: azure/login@v1.4.3
               name: Azure login
               with:
