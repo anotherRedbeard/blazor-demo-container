@@ -16,6 +16,7 @@ env:
     CLUSTER_RESOURCE_GROUP: red-aks-demo-rg
     CONTAINER_NAME: blazor-client
     NAMESPACE_NAME: aks-dev-ns
+    TODO_BACKEND_SERVICE_NAME: todo-api-backend
     DEPLOYMENT_MANIFEST_PATH: |
         ./azure-aks-deployment.yaml
 jobs:
@@ -30,7 +31,7 @@ jobs:
               uses: azure/CLI@v1
               with:
                 inlineScript: |
-                  TODO_BACKEND_ENDPOINT=$(az aks command invoke -n myAKSCluster -g red-aks-demo-rg -c 'kubectl describe services todo-api-backend --namespace aks-dev-ns' | awk -F: '/^Endpoints/{print$2":"$3}' | xargs echo)
+                  TODO_BACKEND_ENDPOINT=$(az aks command invoke -n ${{ env.CLUSTER_NAME }} -g ${{ env.CLUSTER_RESOURCE_GROUP }} -c 'kubectl describe services ${{ env.TODO_BACKEND_SERVICE_NAME }} --namespace ${{ env.NAMESPACE_NAME }}' | awk -F: '/^Endpoints/{print$2":"$3}' | xargs echo)
                   echo TODO_BACKEND_ENDPOINT=$TODO_BACKEND_ENDPOINT >> $GITHUB_ENV
             - name: Replace AppSettings variables
               uses: microsoft/variable-substitution@v1 
@@ -38,7 +39,7 @@ jobs:
                   files: 'wwwroot/appsettings.json'
               env:
                 message: This is from dev
-                TodoApiBaseUrl: https://$TODO_BACKEND_ENDPOINT/
+                TodoApiBaseUrl: https://${{ env.TODO_BACKEND_ENDPOINT }}/
             - uses: azure/login@v1.4.3
               name: Azure login
               with:
