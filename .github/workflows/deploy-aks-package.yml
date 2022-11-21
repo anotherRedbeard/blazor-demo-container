@@ -27,6 +27,10 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
+            - uses: azure/login@v1.4.3
+              name: Azure login
+              with:
+                creds: ${{ secrets.AZURE_CREDENTIALS }}
             - name: get todo backend api endpoint
               uses: azure/CLI@v1
               with:
@@ -40,10 +44,6 @@ jobs:
               env:
                 message: This is from dev
                 TodoApiBaseUrl: https://${{ env.TODO_BACKEND_ENDPOINT }}/
-            - uses: azure/login@v1.4.3
-              name: Azure login
-              with:
-                creds: ${{ secrets.AZURE_CREDENTIALS }}
             - name: Build and push image to ACR
               run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ env.VERSION }}.${{ github.run_number }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./Dockerfile ./
             
