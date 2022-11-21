@@ -26,6 +26,13 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
+            - name: Replace AppSettings variables
+              uses: microsoft/variable-substitution@v1 
+              with:
+                  files: 'wwwroot/appsettings.json'
+              env:
+                message: This is from dev
+                TodoApiBaseUrl: https://${{ env.CLUSTER_NAME }}/
             - uses: azure/login@v1.4.3
               name: Azure login
               with:
