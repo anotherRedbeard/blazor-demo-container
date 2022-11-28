@@ -35,15 +35,17 @@ jobs:
               uses: azure/CLI@v1
               with:
                 inlineScript: |
-                  TODO_BACKEND_ENDPOINT=$(az aks command invoke -n ${{ env.CLUSTER_NAME }} -g ${{ env.CLUSTER_RESOURCE_GROUP }} -c 'kubectl describe services ${{ env.TODO_BACKEND_SERVICE_NAME }} --namespace ${{ env.NAMESPACE_NAME }}' | awk -F: '/^Endpoints/{print$2":"$3}' | xargs echo)
+                  TODO_BACKEND_ENDPOINT=$(az aks command invoke -n ${{ env.CLUSTER_NAME }} -g ${{ env.CLUSTER_RESOURCE_GROUP }} -c 'kubectl describe services ${{ env.TODO_BACKEND_SERVICE_NAME }} --namespace ${{ env.NAMESPACE_NAME }}' | awk -F: '/^LoadBalancer Ingress/{print$2}' | xargs echo)
+                  TODO_BACKEND_PORT=$(az aks command invoke -n ${{ env.CLUSTER_NAME }} -g ${{ env.CLUSTER_RESOURCE_GROUP }} -c 'kubectl describe services ${{ env.TODO_BACKEND_SERVICE_NAME }} --namespace ${{ env.NAMESPACE_NAME }}' | awk -F: '/^Endpoints/{print$3}' | xargs echo)
                   echo TODO_BACKEND_ENDPOINT=$TODO_BACKEND_ENDPOINT >> $GITHUB_ENV
+                  echo TODO_BACKEND_PORT=$TODO_BACKEND_PORT >> $GITHUB_ENV
             - name: Replace AppSettings variables
               uses: microsoft/variable-substitution@v1 
               with:
                   files: 'wwwroot/appsettings.json'
               env:
                 message: This is from dev
-                TodoApiBaseUrl: http://${{ env.TODO_BACKEND_ENDPOINT }}/
+                TodoApiBaseUrl: "http://${{ env.TODO_BACKEND_ENDPOINT }}:${{ env.TODO_BACKEND_PORT }}/"
             - name: Build and push image to ACR
               run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ env.VERSION }}.${{ github.run_number }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./Dockerfile ./
             
