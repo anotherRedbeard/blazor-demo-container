@@ -35,8 +35,8 @@ jobs:
               uses: azure/CLI@v1
               with:
                 inlineScript: |
-                  TODO_BACKEND_ENDPOINT=$(az aks command invoke -n ${{ env.CLUSTER_NAME }} -g ${{ env.CLUSTER_RESOURCE_GROUP }} -c 'kubectl describe services todo-api-backend ${{ env.TODO_BACKEND_SERVICE_NAME }} --namespace ${{ env.NAMESPACE_NAME }}' | awk -F: '/^LoadBalancer Ingress/{print$2}' | xargs echo)
-                  TODO_BACKEND_PORT=$(az aks command invoke -n ${{ env.CLUSTER_NAME }} -g ${{ env.CLUSTER_RESOURCE_GROUP }} -c 'kubectl describe services todo-api-backend ${{ env.TODO_BACKEND_SERVICE_NAME }} --namespace ${{ env.NAMESPACE_NAME }}' | awk -F: '/^Endpoints/{print$3}' | xargs echo)
+                  TODO_BACKEND_ENDPOINT=$(az aks command invoke -n ${{ env.CLUSTER_NAME }} -g ${{ env.CLUSTER_RESOURCE_GROUP }} -c 'kubectl describe services ${{ env.TODO_BACKEND_SERVICE_NAME }} --namespace ${{ env.NAMESPACE_NAME }}' | awk -F: '/^LoadBalancer Ingress/{print$2}' | xargs echo)
+                  TODO_BACKEND_PORT=$(az aks command invoke -n ${{ env.CLUSTER_NAME }} -g ${{ env.CLUSTER_RESOURCE_GROUP }} -c 'kubectl describe services ${{ env.TODO_BACKEND_SERVICE_NAME }} --namespace ${{ env.NAMESPACE_NAME }}' | awk -F: '/^Endpoints/{print$3}' | xargs echo)
                   echo TODO_BACKEND_ENDPOINT=$TODO_BACKEND_ENDPOINT >> $GITHUB_ENV
                   echo TODO_BACKEND_PORT=$TODO_BACKEND_PORT >> $GITHUB_ENV
             - name: Replace AppSettings variables
