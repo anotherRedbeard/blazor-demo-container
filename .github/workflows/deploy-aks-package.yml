@@ -47,7 +47,7 @@ jobs:
                 message: This is from dev
                 TodoApiBaseUrl: "http://${{ env.TODO_BACKEND_ENDPOINT }}:${{ env.TODO_BACKEND_PORT }}/"
             - name: Build and push image to ACR
-              run: az acr build -t ${{ env.CONTAINER_NAME }}:latest - ${{ env.CONTAINER_NAME }}:${{ env.VERSION }}.${{ github.run_number }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./Dockerfile ./
+              run: az acr build -t ${{ env.CONTAINER_NAME }}:latest -t ${{ env.CONTAINER_NAME }}:${{ env.VERSION }}.${{ github.run_number }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./Dockerfile ./
             
     deploy:
         permissions:
