@@ -25,13 +25,28 @@ This is meant to be a repo that you can clone and use as you like.  The only thi
   - The credentials for this service principle need to be stored according to this document:  [Service Principal Secret](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#use-the-azure-login-action-with-a-service-principal-secret)
   - I have used the name `AZURE_CREDENTIALS` for the secret
 
-## Workflow
+## GitHub Workflows
 
-The workflow has 3 separate stages: build-infra, build, deploy
+There are a few workflows used by this project to demonstrate the different ways and resources you can deploy to.  Currently there are examples for an Azure Container App and Azure Kubernetes Service (AKS).
+
+### `deploy-aca-package.yml`
+
+The workflow will deploy everything it needs to a given resource group and into an Azure Container App.  It has 3 separate stages: build-infra, build, deploy
 
 1. build-infra
-    - Creates all the required infrastructure you need for Azure Container Apps.  These actions are idempotent so they can be run multiple times.
+    - Creates all the required infrastructure you need for Azure Container Apps using the `az cli`.  These actions are idempotent so they can be run multiple times.
 2. build
     - Builds the container and tags the image
 3. deploy
     - Uses the container image that was built and pushed to ACR and creates/updates that container app with that newly built image
+
+### `deploy-aks-package.yml`
+
+The workflow is assuming that you have everything in place from an infrastructure perspective (AKS Cluster, namespace, container registry, and log analytics workspace).  You can find an example of how to deploy that infrastructure in this GitHub repo.  I use that one with this one.  This workflow 2 separate stages: buildImage, deploy
+
+1. buildImage
+    - We use the `az aks command invoke` command to get the endpoint for the api so we can set it in the `appsettings.json` file.  This way it can be dynamic when we deploy.
+    - Builds the container and tags the image
+2. deploy
+    - We use a `sed` script to replace variables in the AKS deployment file so it can be dynamic to use the container image we just built.
+    - Then we use the deployment file to setup the deployment in AKS
