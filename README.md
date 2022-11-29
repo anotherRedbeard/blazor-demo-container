@@ -8,9 +8,10 @@ This project was created initially by using the sample Blazor todo list app from
 
 ## Badges
 
-[![Trigger container apps deployment](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aca-package.yml/badge.svg)](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aca-package.yml)
-
-[![Trigger aks app deployment](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aks-package.yml/badge.svg)](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aks-package.yml)
+| Workflow Name     | Badge |
+| ----------- | ----------- |
+| Azure Container App Deployment | [![Trigger container apps deployment](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aca-package.yml/badge.svg)](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aca-package.yml) |
+| Azure Kubernetes Service (AKS) Deployment | [![Trigger aks app deployment](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aks-package.yml/badge.svg)](https://github.com/anotherRedbeard/blazor-demo-container/actions/workflows/deploy-aks-package.yml) |
 
 ## How to use
 
@@ -42,7 +43,9 @@ The workflow will deploy everything it needs to a given resource group and into 
 
 ### `deploy-aks-package.yml`
 
-The workflow is assuming that you have everything in place from an infrastructure perspective (AKS Cluster, namespace, container registry, and log analytics workspace).  You can find an example of how to deploy that infrastructure in this GitHub repo.  I use that one with this one.  This workflow 2 separate stages: buildImage, deploy
+The workflow is assuming that you have everything in place from an infrastructure perspective (AKS Cluster, namespace, container registry, and log analytics workspace).  You can find an example of how to deploy that infrastructure in this GitHub repo.  I use that one with this one [AKS Cluster Deploy Example using Bicep](https://github.com/anotherRedbeard/web-api-demo-container/blob/main/.github/workflows/deploy-aks-package.yaml#L25).
+
+This workflow has 2 separate stages: buildImage, deploy:
 
 1. buildImage
     - We use the `az aks command invoke` command to get the endpoint for the api so we can set it in the `appsettings.json` file.  This way it can be dynamic when we deploy.
