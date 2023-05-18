@@ -29,6 +29,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         serviceEndpoint = Configuration["TodoApiBaseUrl"] + "api/TodoItems";
+        Console.WriteLine($"foo2 = ");
         todoItems = await Http.GetFromJsonAsync<TodoItem[]>(serviceEndpoint);
+        Console.WriteLine("Todo Items: " + todoItems.Length);
     }
 }
