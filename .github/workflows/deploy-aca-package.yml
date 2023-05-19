@@ -187,4 +187,3 @@ jobs:
       #az containerapp revision list -n todo-blazorclient-aca -g red-scus-test-rg --query "sort_by(@, &properties.createdTime)[].name | reverse(@)" -o tsv
       #deactivate revision
       #az containerapp revision deactivate -g red-scus-test-rg --revision todo-blazorclient-aca--v102
-      #
