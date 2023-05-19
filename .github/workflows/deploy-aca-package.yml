@@ -177,4 +177,14 @@ jobs:
               --registry-password ${{ env.ACR_PASSWORD }} \
               --ingress external --target-port 80 \
               --env-vars message='test is a test again' value=foobar \
-              --revisions-mode multiple --revision-suffix ${{ env.major-version }}${{ env.minor-version }}${{ github.run_number }} 
+              --revisions-mode multiple --revision-suffix ${{ env.major-version }}${{ env.minor-version }}${{ github.run_number }}
+            PREV_REVISION=$(az containerapp revision list -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --query "sort_by(@, &properties.createdTime)[].name | reverse(@) | [1]" -o tsv)
+            az containerapp ingress traffic set -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --revision-weight latest=50 $PREV_REVISION=50
+            
+      #list oldest active revision
+      #az containerapp revision list -n todo-blazorclient-aca -g red-scus-test-rg --query "sort_by(@, &properties.createdTime)[0].name" -o tsv
+      #list all revisions sorted by recent
+      #az containerapp revision list -n todo-blazorclient-aca -g red-scus-test-rg --query "sort_by(@, &properties.createdTime)[].name | reverse(@)" -o tsv
+      #deactivate revision
+      #az containerapp revision deactivate -g red-scus-test-rg --revision todo-blazorclient-aca--v102
+      #
