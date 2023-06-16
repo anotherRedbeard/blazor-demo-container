@@ -8,6 +8,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 Console.WriteLine($"foo = {builder.Configuration["message"]}");
 
+
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 await builder.Build().RunAsync();
