@@ -180,6 +180,13 @@ jobs:
               --revisions-mode multiple --revision-suffix ${{ env.major-version }}${{ env.minor-version }}${{ github.run_number }}
             PREV_REVISION=$(az containerapp revision list -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --query "sort_by(@, &properties.createdTime)[].name | reverse(@) | [1]" -o tsv)
             az containerapp ingress traffic set -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --revision-weight latest=50 $PREV_REVISION=50
+
+      - name: Check site before traffic split
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az config set extension.use_dynamic_install=yes_without_prompt
+            az containerapp show -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --query properties.configuration.ingress.fqdn --out tsv
             
       #list oldest active revision
       #az containerapp revision list -n todo-blazorclient-aca -g red-scus-test-rg --query "sort_by(@, &properties.createdTime)[0].name" -o tsv

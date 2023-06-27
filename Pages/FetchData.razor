@@ -1,5 +1,6 @@
 ﻿@page "/fetchdata"
 @inject HttpClient Http
+@inject IConfiguration Configuration
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -38,10 +39,13 @@ else
 
 @code {
     private WeatherForecast[]? forecasts;
+    private string serviceEndpoint = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        serviceEndpoint = Configuration["TodoApiBaseUrl"] + "WeatherForecast";
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>(serviceEndpoint);
+        Console.WriteLine("weather forecasts: " + forecasts?.Length);
     }
 
     public class WeatherForecast
