@@ -116,6 +116,7 @@ jobs:
             az config set extension.use_dynamic_install=yes_without_prompt
             API_CONTAINER_URL=$(az containerapp show -n ${{ env.api-container-name }} -g ${{ env.api-container-rg-name }} --query properties.configuration.ingress.fqdn --out tsv || echo "Error")
             echo API_CONTAINER_URL=$API_CONTAINER_URL >> $GITHUB_ENV
+            echo API_CONTAINER_URL=$API_CONTAINER_URL >> $GITHUB_OUTPUT
 
       - name: Check if URL is obtained
         run: echo "URL obtained"
