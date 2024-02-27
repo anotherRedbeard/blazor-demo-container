@@ -8,7 +8,7 @@ on:
       [ main ]
     paths-ignore:
       - 'README.md'
-      - '.github/workflows/deploy-aks-package.yml'
+      - '.github/workflows/**'
 
   # Allow mannually trigger 
   workflow_dispatch:
@@ -17,15 +17,15 @@ env:
   major-version: 'v1'
   minor-version: '0'
   location: 'southcentralus'
-  resource-group-name: 'red-scus-test-rg'
-  log-analytics-workspace-name: 'redscusworkspace00111'
+  resource-group-name: 'brd-scus-test-rg'
+  log-analytics-workspace-name: 'brdscusworkspace00111'
   aca-env-name: 'dev-env'
-  registry-name: 'redscuscontainerreg000111'
+  registry-name: 'brdscuscontainerreg000111'
   registry-sku: 'Standard'
   image-name: 'todo-blazorclient'
   container-name: 'todo-blazorclient-aca'
   api-container-name: 'todo-webapi-aca'
-  api-container-rg-name: 'red-scus-test-rg'
+  api-container-rg-name: 'brd-scus-test-rg'
 
 jobs:
   build-infra:
