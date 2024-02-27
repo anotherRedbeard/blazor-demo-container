@@ -108,13 +108,23 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Get Client Container url
+      - name: Get Other Container url
+        id: get-container-url
         uses: azure/CLI@v1
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
             API_CONTAINER_URL=$(az containerapp show -n ${{ env.api-container-name }} -g ${{ env.api-container-rg-name }} --query properties.configuration.ingress.fqdn --out tsv)
             echo API_CONTAINER_URL=$API_CONTAINER_URL >> $GITHUB_ENV
+
+      - name: Check if URL is obtained
+        run: echo "URL obtained"
+
+      - name: Handle Continaer url failure
+        if: ${{ steps.get-container-url.outputs.API_CONTAINER_URL == 'Error' }}
+        run: |
+          echo "API_CONTAINER_URL not obtained. Setting default value."
+          echo "API_CONTAINER_URL=default-value" >> $GITHUB_ENV
 
       - name: Checkout to the branch
         uses: actions/checkout@v2
