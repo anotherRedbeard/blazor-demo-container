@@ -114,7 +114,6 @@ jobs:
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
-            #API_CONTAINER_URL=$(az containerapp show -n ${{ env.api-container-name }} -g ${{ env.api-container-rg-name }} --query properties.configuration.ingress.fqdn --out tsv)
             API_CONTAINER_URL=$(az containerapp show -n ${{ env.api-container-name }} -g ${{ env.api-container-rg-name }} --query properties.configuration.ingress.fqdn --out tsv || echo "Error")
             echo API_CONTAINER_URL=$API_CONTAINER_URL >> $GITHUB_ENV
 
@@ -189,6 +188,7 @@ jobs:
               --ingress external --target-port 80 \
               --env-vars message='test is a test again' value=foobar \
               --revisions-mode multiple --revision-suffix ${{ env.major-version }}${{ env.minor-version }}${{ github.run_number }}
+            #Need to check to see if revision exists before doing the traffic split
             PREV_REVISION=$(az containerapp revision list -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --query "sort_by(@, &properties.createdTime)[].name | reverse(@) | [1]" -o tsv)
             az containerapp ingress traffic set -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --revision-weight latest=50 $PREV_REVISION=50
 
