@@ -1,4 +1,7 @@
 ﻿@page "/counter"
+@using Dapr.Client;
+
+@inject HttpClient Http;
 
 <PageTitle>Counter</PageTitle>
 
@@ -9,10 +12,28 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
-    private int currentCount = 0;
+    private int currentCount;
 
-    private void IncrementCount()
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        string serviceEndpoint = "/v1.0/invoke/web-api/method/api/Counter";
+        currentCount = await Http.GetFromJsonAsync<int>(serviceEndpoint);
+        Console.WriteLine("count is " + currentCount);
+        //currentCount = await _daprClient.InvokeMethodAsync<int>(HttpMethod.Get, "web-api", $"api/counter");
+        //Console.WriteLine("current count: " + currentCount);
+    }
+
+    private async void  IncrementCount()
+    {
+        int increment = 1;
+        string serviceEndpoint = $"/v1.0/invoke/web-api/method/api/Counter/increment/{increment}";
+
+        var request = new HttpRequestMessage(HttpMethod.Put, serviceEndpoint);
+        var response = await Http.SendAsync(request);
+        if (response.IsSuccessStatusCode)
+        {
+            currentCount = await response.Content.ReadFromJsonAsync<int>();
+        }
+        //currentCount = await _daprClient.InvokeMethodAsync<int>(HttpMethod.Put, "web-api", $"api/counter/increment/1");
     }
 }

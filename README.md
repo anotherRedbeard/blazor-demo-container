@@ -21,10 +21,41 @@ This is meant to be a repo that you can clone and use as you like.  The only thi
 
 - **Azure Subscription**
 - **This repo cloned in your own GitHub repo**
+- **Dapr CLI installed**
+  - Refer to [Dapr docs](https://docs.dapr.io/getting-started/install-dapr-cli/) for details
+- **Docker Desktop**
+  - Refer to [Docker docs](https://www.docker.com/products/docker-desktop/) for details
 - **Service principle with contributor access to the subscription created as a GitHub Secret**
   - This is only so you can create your resource group at the subscription level, if you don't want to give your service principle that kind of access you will need to have another way to create the resource group and then you can remove that step from the workflow
   - The credentials for this service principle need to be stored according to this document:  [Service Principal Secret](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#use-the-azure-login-action-with-a-service-principal-secret)
   - I have used the name `AZURE_CREDENTIALS` for the secret
+
+## Run Locally
+
+Run the following command to run locally
+
+```bash
+=>  dotnet run
+```
+
+### With Dapr
+
+Run the following command to run locally with Dapr.  Here is the basic command with the options defined, also see [Dapr docs](https://docs.dapr.io/reference/cli/dapr-run/):
+
+  `dapr run --app-id APP_ID --app-port APP_PORT --dapr-http-port DAPR_HTTP_PORT dotnet run`
+
+| Option Name | Description |
+| -------- | -------- |
+| app-id   | Unique name of the app   |
+| app-port   | Port that the app is listening on   |
+| dapr-http-port   | Port that Dapr is listening on   |
+| app-protocol   | Protocol you want Dapr to use to communicate with application   |
+
+Here is the actual command I run to run locally:
+
+  ```bash
+  =>  dapr run --app-id blazor-app --app-port 7139 --dapr-http-port 3501 --app-protocol https dotnet run
+  ```
 
 ## GitHub Workflows
 

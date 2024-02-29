@@ -1,4 +1,5 @@
 ﻿@page "/fetchdata"
+
 @inject HttpClient Http
 @inject IConfiguration Configuration
 
@@ -39,12 +40,12 @@ else
 
 @code {
     private WeatherForecast[]? forecasts;
-    private string serviceEndpoint = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        serviceEndpoint = Configuration["TodoApiBaseUrl"] + "WeatherForecast";
+        string serviceEndpoint = "/v1.0/invoke/web-api/method/WeatherForecast";
         forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>(serviceEndpoint);
+        //forecasts = await _daprClient.InvokeMethodAsync<WeatherForecast[]>(HttpMethod.Get, "web-api", $"WeatherForecast");
         Console.WriteLine("weather forecasts: " + forecasts?.Length);
     }
 

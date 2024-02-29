@@ -82,6 +82,8 @@ jobs:
               --location ${{ env.location }} \
               --logs-workspace-id $LOG_ANALYTICS_WORKSPACE_CLIENT_ID \
               --logs-workspace-key $LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET
+              --revisions-mode multiple
+              --revision-suffix ${{ env.major-version }}${{ env.minor-version }}${{ github.run_number }}
 
       - name: Encrypt secrets
         id: encrypt-secrets
@@ -189,9 +191,10 @@ jobs:
               --ingress external --target-port 80 \
               --env-vars message='test is a test again' value=foobar \
               --revisions-mode multiple --revision-suffix ${{ env.major-version }}${{ env.minor-version }}${{ github.run_number }}
-            #Need to check to see if revision exists before doing the traffic split
-            PREV_REVISION=$(az containerapp revision list -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --query "sort_by(@, &properties.createdTime)[].name | reverse(@) | [1]" -o tsv)
-            az containerapp ingress traffic set -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --revision-weight latest=50 $PREV_REVISION=50
+            if az containerapp revision show -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --revision-name $PREV_REVISION > /dev/null 2>&1; then
+              PREV_REVISION=$(az containerapp revision list -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --query "sort_by(@, &properties.createdTime)[].name | reverse(@) | [1]" -o tsv)
+              az containerapp ingress traffic set -n ${{ env.container-name }} -g ${{ env.resource-group-name }} --revision-weight latest=50 $PREV_REVISION=50
+            fi
 
       - name: Check site before traffic split
         uses: azure/CLI@v1
