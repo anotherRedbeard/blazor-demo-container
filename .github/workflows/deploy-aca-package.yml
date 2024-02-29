@@ -82,8 +82,6 @@ jobs:
               --location ${{ env.location }} \
               --logs-workspace-id $LOG_ANALYTICS_WORKSPACE_CLIENT_ID \
               --logs-workspace-key $LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET
-              --revisions-mode multiple
-              --revision-suffix ${{ env.major-version }}${{ env.minor-version }}${{ github.run_number }}
 
       - name: Encrypt secrets
         id: encrypt-secrets
