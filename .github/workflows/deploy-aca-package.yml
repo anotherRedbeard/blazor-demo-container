@@ -119,9 +119,6 @@ jobs:
             echo API_CONTAINER_URL=$API_CONTAINER_URL >> $GITHUB_ENV
             echo API_CONTAINER_URL=$API_CONTAINER_URL >> $GITHUB_OUTPUT
 
-      - name: Check if URL is obtained
-        run: echo "URL obtained"
-
       - name: Handle Continaer url failure
         if: ${{ steps.get-container-url.outputs.API_CONTAINER_URL == 'Error' }}
         run: |
